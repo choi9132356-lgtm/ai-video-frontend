@@ -17,6 +17,11 @@ const router = createRouter({
       component: () => import('../views/ShowcaseView.vue')
     },
     {
+      path: '/process',
+      name: 'process',
+      component: () => import('../views/ProcessView.vue')
+    },
+    {
       path: '/order',
       name: 'order',
       component: () => import('../views/OrderView.vue')
