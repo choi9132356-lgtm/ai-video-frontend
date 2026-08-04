@@ -6,7 +6,13 @@
         <div class="logo">🎬 Movie Day Studio</div>
       </router-link>
 
-      <div class="nav-buttons">
+      <!-- 모바일 햄버거 버튼 (좁은 화면에서만 표시) -->
+      <button class="hamburger-btn" @click="isMenuOpen = !isMenuOpen" :aria-expanded="isMenuOpen" aria-label="메뉴 열기">
+        <span v-if="!isMenuOpen">☰</span>
+        <span v-else>✕</span>
+      </button>
+
+      <div class="nav-buttons" :class="{ 'is-open': isMenuOpen }" @click="isMenuOpen = false">
         <!-- 🎯 [신규 추가] 누구나 언제든 예제 영상을 볼 수 있도록 첫 번째 메뉴로 쇼케이스 링크 배치 -->
         <router-link to="/showcase" class="nav-menu-item">샘플 쇼케이스 ✨</router-link>
 
@@ -93,7 +99,8 @@
         return {
           isLoggedIn: false,
           loginUserName: '',
-          userRole: ''
+          userRole: '',
+          isMenuOpen: false
         }
       },
       mounted() {
@@ -102,6 +109,7 @@
       watch: {
         $route() {
           this.checkLoginStatus();
+          this.isMenuOpen = false; // 페이지 이동 시 모바일 메뉴 닫기
         }
       },
       methods: {
@@ -150,6 +158,8 @@
   header .nav-buttons .btn-login { color: #aaa; }
   header .nav-buttons .btn-login:hover { color: #fff; }
   header .nav-buttons .btn-signup { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+  /* 햄버거 버튼 — 데스크톱에서는 숨김 */
+  .hamburger-btn { display: none; background: none; border: none; color: #fff; font-size: 26px; cursor: pointer; padding: 4px 8px; line-height: 1; }
   .router-link-active:not(.logo-link) { color: #00c6ff !important; font-weight: bold; }
   .hero { text-align: center; padding: 60px 20px 45px 20px; background: radial-gradient(circle at top, rgba(99, 102, 241, 0.2) 0%, rgba(11, 15, 25, 0.5) 100%); flex-shrink: 0; }
   .hero h1 { font-size: 38px; margin-top: 0; margin-bottom: 15px; font-weight: 800; line-height: 1.3; }
@@ -184,10 +194,33 @@
   @media (max-width: 768px) {
     header { padding: 15px 20px; }
     header .logo { font-size: 20px; }
-    header .nav-buttons { flex-direction: row; }
-    .nav-menu-item { font-size: 12px; margin-right: 10px; }
-    header .nav-buttons .btn { padding: 8px 14px; font-size: 12px; margin-left: 5px; }
-    .nav-divider { margin-right: 5px; }
+
+    /* 햄버거 버튼 표시 */
+    .hamburger-btn { display: block; }
+
+    /* 메뉴: 기본 숨김 → 햄버거 클릭 시 세로 드롭다운으로 펼침 */
+    header .nav-buttons {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: stretch;
+      background: rgba(11, 15, 25, 0.97);
+      backdrop-filter: blur(12px);
+      padding: 10px 20px 20px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      gap: 4px;
+    }
+    header .nav-buttons.is-open { display: flex; }
+
+    .nav-menu-item { font-size: 15px; margin-right: 0; padding: 14px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .nav-divider { display: none; }
+
+    header .nav-buttons .btn { display: block; text-align: center; margin: 6px 0 0 0; padding: 12px; font-size: 15px; }
+    .user-welcome { padding: 12px 8px; display: block; }
+
     .hero { padding: 40px 20px 30px 20px; }
     .hero h1 { font-size: 26px; }
     .hero p { font-size: 14px; margin-bottom: 20px; }
