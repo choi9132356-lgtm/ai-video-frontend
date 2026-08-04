@@ -54,11 +54,7 @@
             <div class="card">
               <div class="card-image disney-bg"></div>
               <div class="card-content">
-                <h3>디즈니 스타일 식전영상</h3>
-                <div class="price-row">
-                  <span class="card-price">100,000원</span>
-                  <span class="card-length">⏱️ 최대 1분 30초</span>
-                </div>
+                <h3>디즈니 스타일</h3>
                 <p>우리 커플의 러브스토리를 마법 같은 디즈니 3D 애니메이션 감성으로 재탄생시킵니다. 결혼식을 더욱 특별하게 만들어보세요.</p>
                 <span class="btn-order">지금 주문하기 &rarr;</span>
               </div>
@@ -69,12 +65,19 @@
             <div class="card">
               <div class="card-image ghibli-bg"></div>
               <div class="card-content">
-                <h3>지브리 스타일 뮤직비디오</h3>
-                <div class="price-row">
-                  <span class="card-price">200,000원</span>
-                  <span class="card-length">⏱️ 최대 2분 30초</span>
-                </div>
-                <p>특유의 따뜻하고 서정적인 수채화풍 지브리 감성 일러스트 비주얼. 내가 좋아하는 음악에 맞춰 감성 가득한 뮤비를 제작합니다.</p>
+                <h3>지브리 스타일</h3>
+                <p>특유의 따뜻하고 서정적인 수채화풍 지브리 감성 일러스트 비주얼. 내가 좋아하는 음악에 맞춰 감성 가득한 영상을 제작합니다.</p>
+                <span class="btn-order">지금 주문하기 &rarr;</span>
+              </div>
+            </div>
+          </router-link>
+
+          <router-link :to="{ path: '/order', query: { style: 'cinematic' } }" class="card-link-wrapper">
+            <div class="card">
+              <div class="card-image cinematic-bg"></div>
+              <div class="card-content">
+                <h3>시네마틱 실사 스타일</h3>
+                <p>영화 같은 시네마틱 색감과 실사 영상미로 특별한 순간을 담아냅니다. 드라마틱한 연출과 감동적인 스토리텔링으로 영상을 제작합니다.</p>
                 <span class="btn-order">지금 주문하기 &rarr;</span>
               </div>
             </div>
@@ -177,7 +180,7 @@
   .hero .btn-main:hover { transform: scale(1.05); }
   .services { padding: 40px 40px 80px 40px; max-width: 1400px; margin: 0 auto; border-top: 1px solid rgba(255, 255, 255, 0.08); width: 100%; box-sizing: border-box; flex-shrink: 0; }
   .services h2 { font-size: 36px; font-weight: 700; margin-bottom: 50px; text-align: center; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 40px; justify-content: center; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; justify-content: center; }
 
   .card-link-wrapper { text-decoration: none; color: inherit; display: block; }
   .card { background-color: #131a26; border-radius: 20px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.5); transition: transform 0.3s, box-shadow 0.3s; border: 1px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column; }
@@ -186,6 +189,7 @@
   .card-image::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, transparent 50%, #131a26); }
   .disney-bg { background-image: url('/disney.png'); }
   .ghibli-bg { background-image: url('/ghibli.png'); }
+  .cinematic-bg { background-image: url('/cinematic.jpg'); }
   .card-content { padding: 35px; background-color: #131a26; flex-grow: 1; }
   .card-content h3 { font-size: 26px; margin: 0 0 15px 0; color: #fff; }
   .card-content p { color: #9aa4b7; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0; }
