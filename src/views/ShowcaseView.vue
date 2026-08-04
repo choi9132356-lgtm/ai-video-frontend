@@ -21,28 +21,19 @@
         <div class="active-video-container">
             <div class="video-card">
                 <div class="video-wrapper">
-                    <!-- 💡 ref를 부여하여 스크립트에서 음소거 상태를 직접 컨트롤합니다 -->
-                    <!-- 🚨 주의: 브라우저 정책 상 처음엔 muted가 있어야 자동재생이 시작됩니다 -->
-                    <video
-                            ref="showcaseVideoRef"
-                            :key="selectedVideo.videoUrl"
-                            :src="selectedVideo.videoUrl"
-                            autoplay
-                            loop
-                            muted
-                            playsinline
+                    <iframe
+                            :key="selectedVideo.youtubeId"
+                            :src="`https://www.youtube.com/embed/${selectedVideo.youtubeId}?autoplay=1&mute=1&loop=1&playlist=${selectedVideo.youtubeId}`"
                             class="showcase-video"
-                    ></video>
+                            frameborder="0"
+                            allow="autoplay; encrypted-media; fullscreen"
+                            allowfullscreen
+                    ></iframe>
 
                     <div class="video-overlay">
                         <span class="badge-style">{{ selectedVideo.style }}</span>
                     </div>
 
-                    <!-- 🔊 [신규 추가] 오디오 볼륨/음소거 토글 버튼 -->
-                    <button @click="toggleMute" class="btn-mute-toggle" :title="isMuted ? '소리 켜기' : '음소거'">
-                        <span v-if="isMuted">🔇 소리 켜기</span>
-                        <span v-else>🔊 음소거</span>
-                    </button>
                 </div>
 
                 <div class="video-info">
@@ -63,21 +54,20 @@
       data() {
         return {
           currentTab: 0,
-          isMuted: true, // 💡 최초 자동재생을 위해 기본값은 true(음소거)로 시작
           showcaseVideos: [
             {
               styleName: "✨ 디즈니 스타일 샘플",
               title: "👰🤵 디즈니 감성 식전영상 예제",
               style: "Disney Theme",
               prompt: "Magical fairy tale wedding theme, 3D Disney animation character style, emotional and bright lighting, highly detailed 8k",
-              videoUrl: `${import.meta.env.VITE_API_BASE_URL}/api/orders/showcase/stream?fileName=` + encodeURIComponent("디즈니식전영상.mp4")
+              youtubeId: "rPUzmfpkPGs"
             },
             {
               styleName: "🎵 지브리 스타일 샘플",
               title: "🌳 지브리풍 감성 뮤직비디오 예제",
               style: "Ghibli Art",
               prompt: "Cozy animated green meadow, nostalgic anime aesthetics, hand-drawn cinematic watercolor texture, warm summer breeze",
-              videoUrl: `${import.meta.env.VITE_API_BASE_URL}/api/orders/showcase/stream?fileName=` + encodeURIComponent("지브리뮤직비디오.mp4")
+              youtubeId: "LgaCd-Jqtz4"
             }
           ]
         }
@@ -88,24 +78,9 @@
         }
       },
       methods: {
-        // 🔊 소리 토글 함수
-        toggleMute() {
-          const video = this.$refs.showcaseVideoRef;
-          if (video) {
-            video.muted = !video.muted;
-            this.isMuted = video.muted;
-          }
-        },
-        // 🔄 탭 전환 시 오디오 유연성 처리
+        // 🔄 탭 전환 (유튜브 iframe은 :key 변경으로 자동 리로드됨)
         changeTab(idx) {
           this.currentTab = idx;
-          // 💡 새 탭으로 바뀔 때 유저가 직전에 소리를 켜두었다면, 새 영상도 소리가 나도록 유지하기 위한 예외 처리
-          this.$nextTick(() => {
-            const video = this.$refs.showcaseVideoRef;
-            if (video) {
-              video.muted = this.isMuted;
-            }
-          });
         }
       }
     }
@@ -221,30 +196,6 @@
       font-weight: bold;
       letter-spacing: 0.5px;
       backdrop-filter: blur(4px);
-    }
-
-    /* 🔊 음소거 토글 버튼 스타일링 */
-    .btn-mute-toggle {
-      position: absolute;
-      bottom: 15px;
-      right: 15px;
-      z-index: 10;
-      background: rgba(11, 15, 25, 0.7);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 8px 14px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: bold;
-      cursor: pointer;
-      backdrop-filter: blur(6px);
-      transition: all 0.2s ease;
-    }
-
-    .btn-mute-toggle:hover {
-      background: rgba(0, 198, 255, 0.3);
-      border-color: #00c6ff;
-      transform: scale(1.05);
     }
 
     .video-info {
