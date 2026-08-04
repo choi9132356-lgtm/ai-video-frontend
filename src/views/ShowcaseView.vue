@@ -70,14 +70,14 @@
               title: "👰🤵 디즈니 감성 식전영상 예제",
               style: "Disney Theme",
               prompt: "Magical fairy tale wedding theme, 3D Disney animation character style, emotional and bright lighting, highly detailed 8k",
-              videoUrl: "http://localhost:8080/api/orders/showcase/stream?fileName=" + encodeURIComponent("디즈니식전영상.mp4")
+              videoUrl: `${import.meta.env.VITE_API_BASE_URL}/api/orders/showcase/stream?fileName=` + encodeURIComponent("디즈니식전영상.mp4")
             },
             {
               styleName: "🎵 지브리 스타일 샘플",
               title: "🌳 지브리풍 감성 뮤직비디오 예제",
               style: "Ghibli Art",
               prompt: "Cozy animated green meadow, nostalgic anime aesthetics, hand-drawn cinematic watercolor texture, warm summer breeze",
-              videoUrl: "http://localhost:8080/api/orders/showcase/stream?fileName=" + encodeURIComponent("지브리뮤직비디오.mp4")
+              videoUrl: `${import.meta.env.VITE_API_BASE_URL}/api/orders/showcase/stream?fileName=` + encodeURIComponent("지브리뮤직비디오.mp4")
             }
           ]
         }

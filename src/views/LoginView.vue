@@ -66,7 +66,7 @@
 
           try {
             // 1. 진짜 백엔드 서버의 UserController 로그인 API 주소로 전송!
-            const response = await fetch('http://localhost:8080/api/login', {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/login`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(requestBody)

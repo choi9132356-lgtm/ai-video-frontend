@@ -153,7 +153,7 @@
 
           try {
             // 백엔드 중복 체크 API 호출
-            const response = await fetch(`http://localhost:8080/api/check-id?userId=${encodeURIComponent(this.signupData.email)}`);
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/check-id?userId=${encodeURIComponent(this.signupData.email)}`);
 
             if (response.ok) {
               const data = await response.getJson ? await response.json() : JSON.parse(await response.text());
@@ -211,7 +211,7 @@
           };
 
           try {
-            const response = await fetch('http://localhost:8080/api/register', {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/register`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(requestBody)

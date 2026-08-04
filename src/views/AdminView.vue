@@ -112,7 +112,7 @@
       methods: {
         async fetchOrders() {
           try {
-            const response = await fetch('http://localhost:8080/api/orders/admin/list');
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/orders/admin/list`);
             if (response.ok) {
               this.orders = await response.json();
               console.log("관리자 대시보드 수신 데이터:", this.orders);
@@ -136,8 +136,7 @@
 
         async submitStatusUpdate(order) {
           try {
-            const backendHost = window.location.hostname;
-            const baseUrl = `http://${backendHost}:8080`;
+            const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
             const formData = new FormData();
             formData.append('id', order.id);
@@ -185,7 +184,7 @@
           const sName = encodeURIComponent(file.storedFileName);
           const oName = encodeURIComponent(file.originalFileName);
 
-          const downloadUrl = `http://localhost:8080/api/orders/admin/download?storedName=${sName}&originName=${oName}`;
+          const downloadUrl = `${import.meta.env.VITE_API_BASE_URL}/api/orders/admin/download?storedName=${sName}&originName=${oName}`;
 
           const link = document.createElement('a');
           link.href = downloadUrl;
@@ -205,7 +204,7 @@
           const oName = encodeURIComponent(fileName);
 
           // 기존 백엔드 다운로드 주소 그대로 활용
-          const downloadUrl = `http://localhost:8080/api/orders/admin/download?storedName=${sName}&originName=${oName}`;
+          const downloadUrl = `${import.meta.env.VITE_API_BASE_URL}/api/orders/admin/download?storedName=${sName}&originName=${oName}`;
 
           const link = document.createElement('a');
           link.href = downloadUrl;

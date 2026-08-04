@@ -91,7 +91,7 @@
                                 <!-- 💡 백엔드 DTO 설계 구조인 storedFileName 변수명을 정확하게 바인딩합니다. -->
                                 <img
                                         v-if="file && file.storedFileName"
-                                        :src="`http://localhost:8080/api/orders/view-image?storedName=${encodeURIComponent(file.storedFileName)}`"
+                                        :src="`${import.meta.env.VITE_API_BASE_URL}/api/orders/view-image?storedName=${encodeURIComponent(file.storedFileName)}`"
                                         alt="참고 사진"
                                 />
                             </div>
@@ -134,7 +134,7 @@
             return;
           }
           try {
-            const response = await fetch(`http://localhost:8080/api/orders/user/${savedUserId}`);
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/orders/user/${savedUserId}`);
             if (response.ok) {
               this.orders = await response.json();
               console.log("정상 수신된 유저 주문 데이터:", this.orders);
@@ -151,7 +151,7 @@
 
           const sName = encodeURIComponent(fileName);
           const oName = encodeURIComponent(fileName);
-          const downloadUrl = `http://localhost:8080/api/orders/admin/download?storedName=${sName}&originName=${oName}`;
+          const downloadUrl = `${import.meta.env.VITE_API_BASE_URL}/api/orders/admin/download?storedName=${sName}&originName=${oName}`;
 
           const link = document.createElement('a');
           link.href = downloadUrl;
