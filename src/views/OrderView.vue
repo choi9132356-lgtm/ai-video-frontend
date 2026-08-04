@@ -4,28 +4,49 @@
       <h2>🎬 AI 영상 제작 주문서</h2>
       <p class="subtitle">상상 속 스토리를 고퀄리티 영상으로 실현해 드립니다.</p>
 
-      <form @submit.prevent="submitOrder">
-        <div class="form-group">
-          <label>제작 스타일 선택</label>
-          <div class="style-selector">
-            <label class="style-option" :class="{ active: orderData.videoStyle === 'disney' }">
-              <input type="radio" v-model="orderData.videoStyle" value="disney" />
-              <span class="emoji">🏰</span>
-              <span class="style-title">디즈니 스타일</span>
-              <div class="product-info">
-                <span>⏱️ 길이: 최대 1분 30초</span>
-                <span class="price">100,000원</span>
-              </div>
-            </label>
+      <!-- ===== 1단계: 스타일 선택 ===== -->
+      <div v-if="step === 1" class="style-step">
+        <label class="step-label">제작 스타일을 선택해 주세요</label>
+        <div class="style-card-grid">
+          <div
+            v-for="s in styles"
+            :key="s.key"
+            class="style-card"
+            @click="selectStyle(s.key)"
+          >
+            <img :src="s.image" :alt="s.title" class="style-card-img" />
+            <div class="style-card-title">{{ s.title }}</div>
+          </div>
+        </div>
+      </div>
 
-            <label class="style-option" :class="{ active: orderData.videoStyle === 'ghibli' }">
-              <input type="radio" v-model="orderData.videoStyle" value="ghibli" />
-              <span class="emoji">🍃</span>
-              <span class="style-title">지브리 스타일</span>
-              <div class="product-info">
-                <span>⏱️ 길이: 최대 2분 30초</span>
-                <span class="price">200,000원</span>
-              </div>
+      <!-- ===== 2단계: 플랜 선택 + 주문 입력 ===== -->
+      <form v-else @submit.prevent="submitOrder">
+        <div class="selected-style-bar">
+          <button type="button" class="btn-back" @click="goBackToStyle">← 스타일 다시 선택</button>
+          <span class="selected-style-name">
+            선택한 스타일: <strong>{{ selectedStyleTitle }}</strong>
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label>플랜을 선택해 주세요</label>
+          <div class="plan-selector">
+            <label
+              v-for="p in plans"
+              :key="p.key"
+              class="plan-option"
+              :class="{ active: orderData.plan === p.key, popular: p.popular }"
+            >
+              <input type="radio" v-model="orderData.plan" :value="p.key" />
+              <span v-if="p.popular" class="popular-badge">⭐ 가장 인기</span>
+              <span class="plan-name">{{ p.name }}</span>
+              <span class="plan-price">{{ p.priceLabel }}<small>원</small></span>
+              <div class="plan-divider"></div>
+              <div class="plan-feature"><span class="ic">⏱️</span> 영상 길이 <b>{{ p.duration }}</b></div>
+              <div class="plan-feature"><span class="ic">🖼️</span> 이미지 수정 <b>{{ p.imgEdit }}회</b></div>
+              <div class="plan-feature"><span class="ic">🎬</span> 영상 수정 <b>{{ p.videoEdit }}회</b></div>
+              <div class="plan-check">✓ 선택됨</div>
             </label>
           </div>
         </div>
@@ -86,12 +107,11 @@
           <div class="price-value">{{ currentPrice }}원</div>
         </div>
 
-        <button type="submit" class="btn-submit">
-          {{ currentPrice }}원 결제 및 주문하기 🚀
+        <button type="submit" class="btn-submit" :disabled="!orderData.plan">
+          {{ orderData.plan ? currentPrice + '원 결제 및 주문하기 🚀' : '플랜을 선택해 주세요' }}
         </button>
       </form>
     </div>
-
     <div v-if="isModalOpen" class="bank-modal-overlay">
       <div class="bank-modal-box">
         <div class="modal-header">
@@ -149,8 +169,20 @@
     name: 'OrderView',
     data() {
       return {
+        step: 1,
+        styles: [
+          { key: 'disney',    title: '디즈니 스타일',      image: '/disney.png' },
+          { key: 'ghibli',    title: '지브리 스타일',      image: '/ghibli.png' },
+          { key: 'cinematic', title: '시네마틱 실사 스타일', image: '/cinematic.jpg' }
+        ],
+        plans: [
+          { key: 'BASIC',    name: 'Basic',    price: 60000,  priceLabel: '60,000',  duration: '1분',       imgEdit: 1, videoEdit: 1 },
+          { key: 'STANDARD', name: 'Standard', price: 100000, priceLabel: '100,000', duration: '1분 30초',  imgEdit: 2, videoEdit: 1, popular: true },
+          { key: 'PREMIUM',  name: 'Premium',  price: 200000, priceLabel: '200,000', duration: '2분',       imgEdit: 3, videoEdit: 2 }
+        ],
         orderData: {
-          videoStyle: 'disney',
+          videoStyle: null,
+          plan: null,
           storyText: '',
           options: {
             bgm: false,
@@ -158,17 +190,19 @@
           }
         },
         uploadedFiles: [],
-        // 🛠️ 모달 열림/닫힘 상태 변수 추가
         isModalOpen: false
       }
     },
     computed: {
+      selectedStyleTitle() {
+        const s = this.styles.find(s => s.key === this.orderData.videoStyle);
+        return s ? s.title : '';
+      },
+      selectedPlan() {
+        return this.plans.find(p => p.key === this.orderData.plan) || null;
+      },
       currentPrice() {
-        if (this.orderData.videoStyle === 'disney') {
-          return '100,000';
-        } else {
-          return '200,000';
-        }
+        return this.selectedPlan ? this.selectedPlan.priceLabel : '0';
       }
     },
     mounted() {
@@ -180,11 +214,20 @@
       }
 
       const selectedStyle = this.$route.query.style;
-      if (selectedStyle === 'disney' || selectedStyle === 'ghibli') {
+      if (['disney', 'ghibli', 'cinematic'].includes(selectedStyle)) {
         this.orderData.videoStyle = selectedStyle;
+        this.step = 2;
       }
     },
     methods: {
+      selectStyle(key) {
+        this.orderData.videoStyle = key;
+        this.step = 2;
+      },
+      goBackToStyle() {
+        this.step = 1;
+        this.orderData.plan = null;
+      },
       triggerFileInput() {
         this.$refs.fileInput.click();
       },
@@ -200,12 +243,25 @@
           return;
         }
 
-        const priceNum = this.orderData.videoStyle === 'disney' ? 100000 : 200000;
-        const styleText = this.orderData.videoStyle === 'disney' ? '디즈니 스타일 식전영상' : '지브리 스타일 뮤직비디오';
+        if (!this.orderData.plan) {
+          alert("플랜을 선택해 주세요.");
+          return;
+        }
+
+        const plan = this.selectedPlan;
+        const priceNum = plan.price;
+
+        const styleMap = {
+          disney: '디즈니 스타일',
+          ghibli: '지브리 스타일',
+          cinematic: '시네마틱 실사 스타일'
+        };
+        const styleText = styleMap[this.orderData.videoStyle] || this.orderData.videoStyle;
 
         const formData = new FormData();
         formData.append('userId', savedUserId);
         formData.append('videoStyle', styleText);
+        formData.append('plan', plan.key);
         formData.append('price', priceNum);
         formData.append('bgmYn', this.orderData.options.bgm);
         formData.append('narrationYn', this.orderData.options.narration);
@@ -222,7 +278,6 @@
           });
 
           if (response.ok) {
-            // ⭕ [수정] 칙칙한 기존 Alert창 대신 모달 팝업을 띄웁니다!
             this.isModalOpen = true;
           } else {
             alert("주문 처리 중 서버 에러가 발생했습니다.");
@@ -232,7 +287,6 @@
           alert("백엔드 서버와 통신에 실패했습니다.");
         }
       },
-      // 🛠️ 모달 닫고 '내 주문 내역'으로 보내주는 신규 메서드
       closeModalAndNavigate() {
         this.isModalOpen = false;
         this.$router.push('/my-orders');
@@ -381,4 +435,182 @@
   .btn-submit { width: 100%; padding: 18px; background: linear-gradient(45deg, #ff4e50, #f9d423); color: #000; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 78, 80, 0.3); transition: transform 0.2s, box-shadow 0.2s; margin-top: 20px; }
   .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 78, 80, 0.5); }
   @media (max-width: 768px) { .order-box { padding: 25px 20px; } .style-selector { grid-template-columns: 1fr; gap: 15px; } .options-wrapper { flex-direction: column; gap: 12px; } .order-box h2 { font-size: 22px; } .total-price-zone { flex-direction: column; gap: 10px; text-align: center; } }
+
+  /* ===== 스타일 선택(1단계) 카드 ===== */
+  .step-label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 18px;
+      color: #e2e8f0;
+      font-size: 16px;
+  }
+  .style-card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+  }
+  .style-card {
+      background-color: #0b0f19;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+  }
+  .style-card:hover {
+      transform: translateY(-6px);
+      border-color: #ff4e50;
+      box-shadow: 0 10px 25px rgba(255, 78, 80, 0.25);
+  }
+  .style-card-img {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+      display: block;
+  }
+  .style-card-title {
+      padding: 16px 10px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
+  }
+
+  /* ===== 선택된 스타일 바 + 뒤로가기 ===== */
+  .selected-style-bar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+  }
+  .btn-back {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #a0aec0;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+  }
+  .btn-back:hover { border-color: #ff4e50; color: #ff4e50; }
+  .selected-style-name { color: #a0aec0; font-size: 15px; }
+  .selected-style-name strong { color: #fff; }
+
+  /* ===== 플랜 선택(2단계) ===== */
+  .plan-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      align-items: stretch;
+  }
+  .plan-option {
+      position: relative;
+      background: linear-gradient(180deg, #161f2e, #0d131f);
+      border: 2px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 26px 18px 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+      text-align: center;
+  }
+  .plan-option:hover {
+      transform: translateY(-6px);
+      border-color: rgba(255, 78, 80, 0.5);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.4);
+  }
+  .plan-option.active {
+      border-color: #ff4e50;
+      box-shadow: 0 0 0 3px rgba(255, 78, 80, 0.25), 0 14px 34px rgba(255, 78, 80, 0.2);
+  }
+  .plan-option.popular {
+      transform: scale(1.05);
+      border-color: #f9d423;
+  }
+  .plan-option.popular:hover {
+      transform: scale(1.05) translateY(-6px);
+  }
+  .plan-option.popular.active {
+      border-color: #f9d423;
+      box-shadow: 0 0 0 3px rgba(249, 212, 35, 0.3), 0 16px 36px rgba(249, 212, 35, 0.18);
+  }
+  .plan-option input[type="radio"] { display: none; }
+  .popular-badge {
+      position: absolute;
+      top: -13px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(45deg, #ff4e50, #f9d423);
+      color: #000;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 5px 16px;
+      border-radius: 20px;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(249, 212, 35, 0.4);
+  }
+  .plan-name {
+      font-size: 19px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 10px;
+      letter-spacing: 0.5px;
+  }
+  .plan-price {
+      font-size: 26px;
+      font-weight: 900;
+      margin-bottom: 4px;
+      background: linear-gradient(45deg, #ff4e50, #f9d423);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+  }
+  .plan-price small {
+      font-size: 14px;
+      color: #717f96;
+      font-weight: 600;
+      -webkit-text-fill-color: #717f96;
+  }
+  .plan-divider {
+      width: 40px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.12);
+      margin: 16px 0;
+      border-radius: 2px;
+  }
+  .plan-feature {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13.5px;
+      color: #cbd5e1;
+      margin-bottom: 11px;
+      width: 100%;
+      justify-content: flex-start;
+  }
+  .plan-feature .ic { width: 22px; text-align: center; flex-shrink: 0; }
+  .plan-feature b { color: #fff; }
+  .plan-check {
+      margin-top: 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #ff4e50;
+      opacity: 0;
+      transition: 0.2s;
+  }
+  .plan-option.active .plan-check { opacity: 1; }
+  .plan-option.popular.active .plan-check { color: #f9d423; }
+  .btn-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+  }
+
+  @media (max-width: 640px) {
+      .style-card-grid, .plan-selector { grid-template-columns: 1fr; }
+  }
 </style>
