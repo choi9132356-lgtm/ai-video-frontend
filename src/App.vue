@@ -16,6 +16,7 @@
         <!-- 🎯 [신규 추가] 누구나 언제든 예제 영상을 볼 수 있도록 첫 번째 메뉴로 쇼케이스 링크 배치 -->
         <router-link to="/showcase" class="nav-menu-item">샘플 쇼케이스 ✨</router-link>
         <router-link to="/process" class="nav-menu-item">제작 과정 🗺️</router-link>
+        <router-link to="/gallery" class="nav-menu-item">작업 갤러리 🖼️</router-link>
 
         <router-link to="/my-orders" class="nav-menu-item">내 주문 내역 📥</router-link>
         <router-link v-if="isLoggedIn && userRole === 'ADMIN'" to="/admin" class="nav-menu-item admin-menu-item">ERP 관리자 🛠️</router-link>
