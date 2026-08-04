@@ -91,7 +91,7 @@
                                 <!-- 💡 백엔드 DTO 설계 구조인 storedFileName 변수명을 정확하게 바인딩합니다. -->
                                 <img
                                         v-if="file && file.storedFileName"
-                                        :src="`${import.meta.env.VITE_API_BASE_URL}/api/orders/view-image?storedName=${encodeURIComponent(file.storedFileName)}`"
+                                        :src="`${apiBaseUrl}/api/orders/view-image?storedName=${encodeURIComponent(file.storedFileName)}`"
                                         alt="참고 사진"
                                 />
                             </div>
@@ -117,6 +117,8 @@
       data() {
         return {
           orders: [],
+          // API 기본 주소 (환경변수). 템플릿에서 import.meta를 직접 못 쓰므로 data로 노출
+          apiBaseUrl: import.meta.env.VITE_API_BASE_URL,
           // 🛠️ [신규 추가] 모달 제어용 상태 변수
           isDetailModalOpen: false,
           selectedOrder: {}
