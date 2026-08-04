@@ -131,5 +131,6 @@
     .status-pending { background: #eab30820; color: #eab308; }
     .status-processing { background: #3b82f620; color: #3b82f6; }
     .status-completed { background: #22c55e20; color: #22c55e; }
+    .status-cancelled { background: #ef444420; color: #ef4444; }
     .text-muted { color: #475569; }
 </style>

@@ -174,6 +174,7 @@
           const s = orderStatus.toLowerCase();
           if (s === 'completed' || s === '완료') return 'completed';
           if (s === 'processing' || s === '제작중' || s === 'progress') return 'processing';
+          if (s === 'cancelled' || s === '취소') return 'cancelled';
           return 'pending';
         },
 
@@ -182,6 +183,7 @@
           const s = orderStatus.toLowerCase();
           if (s === 'completed' || s === '완료') return '제작 완료 ✨';
           if (s === 'processing' || s === '제작중' || s === 'progress') return '영상 제작중 🎬';
+          if (s === 'cancelled' || s === '취소') return '제작 취소됨 ❌';
           return '입금 대기중 ⏳';
         },
 
@@ -223,6 +225,7 @@
     .card-badge.pending { background: rgba(249, 212, 35, 0.15); color: #f9d423; }
     .card-badge.processing { background: rgba(0, 198, 255, 0.15); color: #00c6ff; }
     .card-badge.completed { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+    .card-badge.cancelled { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
 
     .card-content { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; }
     .style-icon-box { background-color: #0b0f19; width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; border-radius: 18px; font-size: 32px; }

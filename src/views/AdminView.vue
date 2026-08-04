@@ -70,6 +70,7 @@
                                     <option value="PENDING">입금 대기 ⏳</option>
                                     <option value="PROCESSING">영상 제작중 🎬</option>
                                     <option value="COMPLETED">제작 완료 ✨</option>
+                                    <option value="CANCELLED">제작 취소 ❌</option>
                                 </select>
 
                                 <div v-if="order.orderStatus === 'COMPLETED' || order.orderStatus === 'completed'" class="completed-file-zone">
@@ -232,6 +233,7 @@
           const s = orderStatus.toLowerCase();
           if (s === 'completed' || s === '완료') return 'status-completed';
           if (s === 'processing' || s === '제작중' || s === 'progress') return 'status-processing';
+          if (s === 'cancelled' || s === '취소') return 'status-cancelled';
           return 'status-pending';
         }
       }
@@ -280,6 +282,7 @@
     .admin-status-select.status-pending { background: #eab30820; color: #eab308; border-color: #eab30840; }
     .admin-status-select.status-processing { background: #3b82f620; color: #3b82f6; border-color: #3b82f640; }
     .admin-status-select.status-completed { background: #22c55e20; color: #22c55e; border-color: #22c55e40; }
+    .admin-status-select.status-cancelled { background: #ef444420; color: #ef4444; border-color: #ef444440; }
     .admin-status-select option { background-color: #0b0f19; color: #fff; }
 
     .completed-file-zone { background: rgba(255, 255, 255, 0.03); padding: 6px; border-radius: 8px; border: 1px dashed rgba(255, 255, 255, 0.1); width: 100%; box-sizing: border-box; }
