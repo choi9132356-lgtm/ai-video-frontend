@@ -13,9 +13,8 @@
               <span class="emoji">🏰</span>
               <span class="style-title">디즈니 스타일</span>
               <div class="product-info">
-                <span>⏱️ 길이: 최대 1분</span>
-                <span>🖼️ 장면: 최대 6장</span>
-                <span class="price">80,000원</span>
+                <span>⏱️ 길이: 최대 1분 30초</span>
+                <span class="price">100,000원</span>
               </div>
             </label>
 
@@ -24,9 +23,8 @@
               <span class="emoji">🍃</span>
               <span class="style-title">지브리 스타일</span>
               <div class="product-info">
-                <span>⏱️ 길이: 최대 3분</span>
-                <span>🖼️ 장면: 최대 14장</span>
-                <span class="price">160,000원</span>
+                <span>⏱️ 길이: 최대 2분 30초</span>
+                <span class="price">200,000원</span>
               </div>
             </label>
           </div>
@@ -60,8 +58,7 @@
         </div>
 
         <div class="form-group">
-          <label v-if="orderData.videoStyle === 'disney'">참고용 사진 업로드 (디즈니 스타일은 최대 6장)</label>
-          <label v-else>참고용 사진 업로드 (지브리 스타일은 최대 12장)</label>
+          <label>참고용 사진 업로드</label>
 
           <div class="file-upload-zone" @click="triggerFileInput">
             <div class="upload-icon">📸</div>
@@ -168,9 +165,9 @@
     computed: {
       currentPrice() {
         if (this.orderData.videoStyle === 'disney') {
-          return '80,000';
+          return '100,000';
         } else {
-          return '160,000';
+          return '200,000';
         }
       }
     },
@@ -193,12 +190,6 @@
       },
       handleFileChange(event) {
         const files = Array.from(event.target.files);
-        const maxLimit = this.orderData.videoStyle === 'disney' ? 6 : 12;
-
-        if (files.length > maxLimit) {
-          alert(`${this.orderData.videoStyle === 'disney' ? '디즈니' : '지브리'} 스타일은 사진을 최대 ${maxLimit}장까지만 업로드할 수 있습니다.`);
-          return;
-        }
         this.uploadedFiles = files;
       },
       async submitOrder() {
@@ -209,7 +200,7 @@
           return;
         }
 
-        const priceNum = this.orderData.videoStyle === 'disney' ? 80000 : 160000;
+        const priceNum = this.orderData.videoStyle === 'disney' ? 100000 : 200000;
         const styleText = this.orderData.videoStyle === 'disney' ? '디즈니 스타일 식전영상' : '지브리 스타일 뮤직비디오';
 
         const formData = new FormData();

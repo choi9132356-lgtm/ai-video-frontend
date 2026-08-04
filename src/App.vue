@@ -41,7 +41,7 @@
     <div v-if="$route.path === '/'" class="main-content-wrapper">
       <section class="hero">
         <h1>상상하는 모든 스토리를<br><span>AI 영상</span>으로 만드세요</h1>
-        <p>텍스트와 몇 장의 사진만으로 전문가가 만든 것 같은 고퀄리티 애니메이션과 뮤직비디오를 몇 분 만에 완성합니다.</p>
+        <p>몇 장의 사진과 소중한 이야기를 전해주시면, 세상에 하나뿐인 감성 영상으로 정성껏 만들어 드립니다.</p>
 
         <router-link to="/order" class="btn-main">지금 제작하기 🚀</router-link>
       </section>
@@ -55,7 +55,10 @@
               <div class="card-image disney-bg"></div>
               <div class="card-content">
                 <h3>디즈니 스타일 식전영상</h3>
-                <div class="card-price">80,000원</div>
+                <div class="price-row">
+                  <span class="card-price">100,000원</span>
+                  <span class="card-length">⏱️ 최대 1분 30초</span>
+                </div>
                 <p>우리 커플의 러브스토리를 마법 같은 디즈니 3D 애니메이션 감성으로 재탄생시킵니다. 결혼식을 더욱 특별하게 만들어보세요.</p>
                 <span class="btn-order">지금 주문하기 &rarr;</span>
               </div>
@@ -67,7 +70,10 @@
               <div class="card-image ghibli-bg"></div>
               <div class="card-content">
                 <h3>지브리 스타일 뮤직비디오</h3>
-                <div class="card-price">160,000원</div>
+                <div class="price-row">
+                  <span class="card-price">200,000원</span>
+                  <span class="card-length">⏱️ 최대 2분 30초</span>
+                </div>
                 <p>특유의 따뜻하고 서정적인 수채화풍 지브리 감성 일러스트 비주얼. 내가 좋아하는 음악에 맞춰 감성 가득한 뮤비를 제작합니다.</p>
                 <span class="btn-order">지금 주문하기 &rarr;</span>
               </div>
@@ -233,7 +239,9 @@
     footer { padding: 40px 20px; }
   }
 
-  .card-price { font-size: 20px; font-weight: 800; color: #f9d423; margin-bottom: 12px; }
+  .price-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .card-price { font-size: 20px; font-weight: 800; color: #f9d423; }
+  .card-length { font-size: 13px; font-weight: 600; color: #9aa4b7; background: rgba(255,255,255,0.06); padding: 4px 10px; border-radius: 20px; }
   .logo-link { text-decoration: none; color: inherit; }
   .user-welcome { color: #ffffff; font-size: 14px; font-weight: 600; margin-right: 10px; }
 </style>
