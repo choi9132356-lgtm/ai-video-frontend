@@ -23,7 +23,7 @@
                 <div class="video-wrapper">
                     <iframe
                             :key="selectedVideo.youtubeId"
-                            :src="`https://www.youtube.com/embed/${selectedVideo.youtubeId}?autoplay=1&mute=1&loop=1&playlist=${selectedVideo.youtubeId}`"
+                            :src="`https://www.youtube.com/embed/${selectedVideo.youtubeId}?autoplay=1&mute=1&loop=1&playlist=${selectedVideo.youtubeId}&rel=0&modestbranding=1`"
                             class="showcase-video"
                             frameborder="0"
                             allow="autoplay; encrypted-media; fullscreen"
