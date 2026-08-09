@@ -176,9 +176,9 @@
           { key: 'cinematic', title: '시네마틱 실사 스타일', image: '/cinematic.jpg' }
         ],
         plans: [
-          { key: 'BASIC',    name: 'Basic',    price: 60000,  priceLabel: '60,000',  duration: '1분',       imgEdit: 1, videoEdit: 1 },
-          { key: 'STANDARD', name: 'Standard', price: 100000, priceLabel: '100,000', duration: '1분 30초',  imgEdit: 2, videoEdit: 1, popular: true },
-          { key: 'PREMIUM',  name: 'Premium',  price: 200000, priceLabel: '200,000', duration: '2분',       imgEdit: 3, videoEdit: 2 }
+          { key: 'BASIC',    name: 'Basic',    price: 80000,  priceLabel: '80,000',  duration: '1분',       imgEdit: 1, videoEdit: 1 },
+          { key: 'STANDARD', name: 'Standard', price: 140000, priceLabel: '140,000', duration: '1분 30초',  imgEdit: 2, videoEdit: 1, popular: true },
+          { key: 'PREMIUM',  name: 'Premium',  price: 230000, priceLabel: '230,000', duration: '2분',       imgEdit: 3, videoEdit: 2 }
         ],
         orderData: {
           videoStyle: null,
