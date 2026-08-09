@@ -68,6 +68,13 @@
               style: "Ghibli Art",
               prompt: "Cozy animated green meadow, nostalgic anime aesthetics, hand-drawn cinematic watercolor texture, warm summer breeze",
               youtubeId: "LgaCd-Jqtz4"
+            },
+            {
+              styleName: "🎬 시네마틱 실사 스타일 샘플",
+              title: "🎥 시네마틱 실사풍 영상 예제",
+              style: "Cinematic Realistic",
+              prompt: "Cinematic realistic footage style, dramatic lighting, film grain texture, professional color grading, ultra high definition",
+              youtubeId: "Q9eMdMuyaPQ"
             }
           ]
         }
