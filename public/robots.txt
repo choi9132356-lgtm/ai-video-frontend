@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://movieday.co.kr/sitemap.xml
+Sitemap: https://www.movieday.co.kr/sitemap.xml
