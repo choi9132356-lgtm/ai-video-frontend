@@ -1,3 +1,8 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /admin-dashboard
+Disallow: /dev-test
+Disallow: /my-orders
+
 Sitemap: https://www.movieday.co.kr/sitemap.xml
