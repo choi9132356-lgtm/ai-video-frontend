@@ -524,19 +524,23 @@
       box-shadow: 0 14px 30px rgba(0, 0, 0, 0.4);
   }
   .plan-option.active {
-      border-color: #ff4e50;
-      box-shadow: 0 0 0 3px rgba(255, 78, 80, 0.25), 0 14px 34px rgba(255, 78, 80, 0.2);
+      border-color: #00c6ff;
+      background: linear-gradient(180deg, #1a2940, #0f1a2e);
+      box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.35), 0 14px 34px rgba(0, 198, 255, 0.25);
+      transform: scale(1.05);
   }
   .plan-option.popular {
-      transform: scale(1.05);
-      border-color: #f9d423;
+      transform: none;
+      border-color: rgba(249, 212, 35, 0.4);
   }
   .plan-option.popular:hover {
-      transform: scale(1.05) translateY(-6px);
+      transform: translateY(-6px);
   }
   .plan-option.popular.active {
-      border-color: #f9d423;
-      box-shadow: 0 0 0 3px rgba(249, 212, 35, 0.3), 0 16px 36px rgba(249, 212, 35, 0.18);
+      border-color: #00c6ff;
+      background: linear-gradient(180deg, #1a2940, #0f1a2e);
+      box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.35), 0 16px 36px rgba(0, 198, 255, 0.25);
+      transform: scale(1.05);
   }
   .plan-option input[type="radio"] { display: none; }
   .popular-badge {
@@ -603,7 +607,7 @@
       transition: 0.2s;
   }
   .plan-option.active .plan-check { opacity: 1; }
-  .plan-option.popular.active .plan-check { color: #f9d423; }
+  .plan-option.popular.active .plan-check { color: #00c6ff; }
   .btn-submit:disabled {
       opacity: 0.5;
       cursor: not-allowed;
