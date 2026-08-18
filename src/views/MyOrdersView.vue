@@ -36,18 +36,18 @@
                 </div>
 
                 <div class="card-actions">
-                    <button v-if="order.completedFileName" @click="downloadCompletedFile(order.completedFileName)" class="btn-download">
-                        영상 다운로드 📥
-                    </button>
+                    <a v-if="order.completedFileName" :href="order.completedFileName" target="_blank" class="btn-download">
+                        영상 받기 🔗
+                    </a>
 
-                    <!-- 🛠️ [수정] 클릭 시 모달이 열리도록 메서드 바인딩 -->
                     <button v-else @click="openDetailModal(order)" class="btn-details">
                         상세 진행 상황 🔍
                     </button>
                 </div>
             </div>
         </div>
-        <!-- 🛠️ [신규 추가] 주문 상세 내역 팝업 모달 -->
+
+        <!-- 주문 상세 내역 팝업 모달 -->
         <div v-if="isDetailModalOpen" class="detail-modal-overlay" @click.self="closeDetailModal">
             <div class="detail-modal-box">
                 <div class="modal-header">
@@ -56,7 +56,6 @@
                 </div>
 
                 <div class="modal-body">
-                    <!-- 1. 스타일 및 옵션 정보 -->
                     <div class="detail-section">
                         <h4>✨ 선택한 스타일 및 옵션</h4>
                         <div class="detail-info-card">
@@ -70,7 +69,6 @@
                         </div>
                     </div>
 
-                    <!-- 2. 스토리 텍스트 -->
                     <div class="detail-section">
                         <h4>📝 내가 작성한 스토리</h4>
                         <div class="story-text-box">
@@ -78,7 +76,6 @@
                         </div>
                     </div>
 
-                    <!-- 3. 📸 내가 첨부한 참고 사진 (DTO 명세 맞춤 정석 최적화 버전) -->
                     <div class="detail-section">
                         <h4>📸 내가 첨부한 참고 사진</h4>
 
@@ -88,7 +85,6 @@
                                     :key="idx"
                                     class="photo-item"
                             >
-                                <!-- 💡 백엔드 DTO 설계 구조인 storedFileName 변수명을 정확하게 바인딩합니다. -->
                                 <img
                                         v-if="file && file.storedFileName"
                                         :src="`${apiBaseUrl}/api/orders/view-image?storedName=${encodeURIComponent(file.storedFileName)}`"
@@ -117,9 +113,7 @@
       data() {
         return {
           orders: [],
-          // API 기본 주소 (환경변수). 템플릿에서 import.meta를 직접 못 쓰므로 data로 노출
           apiBaseUrl: import.meta.env.VITE_API_BASE_URL,
-          // 🛠️ [신규 추가] 모달 제어용 상태 변수
           isDetailModalOpen: false,
           selectedOrder: {}
         }
@@ -148,22 +142,6 @@
           }
         },
 
-        downloadCompletedFile(fileName) {
-          if (!fileName) return;
-
-          const sName = encodeURIComponent(fileName);
-          const oName = encodeURIComponent(fileName);
-          const downloadUrl = `${import.meta.env.VITE_API_BASE_URL}/api/orders/admin/download?storedName=${sName}&originName=${oName}`;
-
-          const link = document.createElement('a');
-          link.href = downloadUrl;
-          link.setAttribute('download', fileName);
-          document.body.appendChild(link);
-
-          link.click();
-          document.body.removeChild(link);
-        },
-
         formatPrice(value) {
           if (!value) return '0';
           return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -187,17 +165,12 @@
           return '입금 대기중 ⏳';
         },
 
-        // 🎯 모달 오픈 함수 최적화
         openDetailModal(order) {
           this.selectedOrder = order;
-
-          // 실시간 확인용으로 가볍고 핵심적인 로그만 남겨둡니다.
           console.log(`[📂 상세조회] 주문 No.${order.id} 첨부파일 개수:`, order.files ? order.files.length : 0);
-
           this.isDetailModalOpen = true;
         },
 
-        // 🛠️ [신규 추가] 모달 폐쇄 함수
         closeDetailModal() {
           this.isDetailModalOpen = false;
           this.selectedOrder = {};
@@ -207,7 +180,6 @@
 </script>
 
 <style scoped>
-    /* 봉준님의 기존 명품 디자인 코드는 100% 동일하게 완벽 보존되었습니다! */
     .orders-container { padding: 80px 20px; max-width: 1100px; margin: 0 auto; color: white; }
     .orders-header { text-align: center; margin-bottom: 60px; }
     .orders-header h2 { font-size: 32px; margin-bottom: 10px; background: linear-gradient(45deg, #00c6ff, #0072ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -234,12 +206,11 @@
     .price-tag { margin-left: auto; font-weight: 800; color: #f9d423; font-size: 18px; }
 
     .card-actions { border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 20px; display: flex; justify-content: flex-end; }
-    .btn-download { background: linear-gradient(45deg, #00c6ff, #0072ff); color: #fff; border: none; padding: 10px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: opacity 0.2s; }
+    .btn-download { background: linear-gradient(45deg, #00c6ff, #0072ff); color: #fff; border: none; padding: 10px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: opacity 0.2s; text-decoration: none; }
     .btn-details { background: #1e293b; color: #94a3b8; border: none; padding: 10px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: background 0.2s, color 0.2s; }
     .btn-details:hover { background: #334155; color: #fff; }
     .btn-download:hover { opacity: 0.9; }
 
-    /* 🛠 Honor 디자인 연계: [신규 추가] 주문 상세 모달 CSS */
     .detail-modal-overlay {
         position: fixed;
         top: 0; left: 0; width: 100%; height: 100%;
@@ -293,7 +264,6 @@
     }
     .btn-modal-close:hover { background: #475569; }
 
-    /* 📸 모달 내 첨부사진 바둑판 스타일 */
     .photo-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
@@ -307,7 +277,7 @@
     }
     .photo-item {
         position: relative;
-        padding-top: 100px; /* 1:1 정사각형 비율 유지 */
+        padding-top: 100px;
         border-radius: 8px;
         overflow: hidden;
         background-color: #1a2333;
@@ -316,12 +286,12 @@
     .photo-item img {
         position: absolute;
         top: 0; left: 0; width: 100%; height: 100%;
-        object-fit: cover; /* 이미지가 찌그러지지 않게 채움 */
+        object-fit: cover;
         cursor: pointer;
         transition: transform 0.2s;
     }
     .photo-item img:hover {
-        transform: scale(1.1); /* 마우스 올리면 살짝 확대효과 */
+        transform: scale(1.1);
     }
 
     @media (max-width: 768px) { .orders-grid { grid-template-columns: 1fr; } .order-card { padding: 25px; } }

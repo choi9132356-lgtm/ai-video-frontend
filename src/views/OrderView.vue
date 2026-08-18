@@ -39,7 +39,6 @@
               :class="{ active: orderData.plan === p.key, popular: p.popular }"
             >
               <input type="radio" v-model="orderData.plan" :value="p.key" />
-              <span v-if="p.popular" class="popular-badge">⭐ 가장 인기</span>
               <span class="plan-name">{{ p.name }}</span>
               <span class="plan-price">{{ p.priceLabel }}<small>원</small></span>
               <div class="plan-divider"></div>
@@ -530,33 +529,9 @@
       transform: scale(1.05);
   }
   .plan-option.popular {
-      transform: none;
-      border-color: rgba(249, 212, 35, 0.4);
-  }
-  .plan-option.popular:hover {
-      transform: translateY(-6px);
-  }
-  .plan-option.popular.active {
-      border-color: #00c6ff;
-      background: linear-gradient(180deg, #1a2940, #0f1a2e);
-      box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.35), 0 16px 36px rgba(0, 198, 255, 0.25);
-      transform: scale(1.05);
+      /* 다른 카드와 동일 */
   }
   .plan-option input[type="radio"] { display: none; }
-  .popular-badge {
-      position: absolute;
-      top: -13px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(45deg, #ff4e50, #f9d423);
-      color: #000;
-      font-size: 12px;
-      font-weight: 800;
-      padding: 5px 16px;
-      border-radius: 20px;
-      white-space: nowrap;
-      box-shadow: 0 4px 12px rgba(249, 212, 35, 0.4);
-  }
   .plan-name {
       font-size: 19px;
       font-weight: 800;

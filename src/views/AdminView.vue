@@ -39,7 +39,6 @@
 
                         <td>
                             <div v-if="order.files && order.files.length > 0" class="file-links" style="margin-bottom: 8px;">
-                                <!-- 🛠️ 이렇게 수정하면 데이터 구조에 상관없이 key 중복 에러가 원천 차단됩니다 -->
                                 <div v-for="(file, idx) in order.files" :key="idx" class="file-item">
                                     📎 <a href="#" @click.prevent="downloadFile(file)">{{ file.originalFileName }}</a>
                                     <span class="file-size">({{ formatBytes(file.fileSize) }})</span>
@@ -47,9 +46,9 @@
                             </div>
 
                             <div v-if="order.completedFileName" class="completed-file-link" style="margin-top: 8px;">
-                                🎁 <span style="color: #22c55e; font-weight: bold; flex-shrink: 0;">완료본:</span>
-                                <a href="#"
-                                   @click.prevent="downloadCompletedFile(order.completedFileName)"
+                                🎁 <span style="color: #22c55e; font-weight: bold; flex-shrink: 0;">완료 링크:</span>
+                                <a :href="order.completedFileName"
+                                   target="_blank"
                                    class="completed-file-text"
                                    :title="order.completedFileName">
                                     {{ order.completedFileName }}
@@ -75,14 +74,11 @@
 
                                 <div v-if="order.orderStatus === 'COMPLETED' || order.orderStatus === 'completed'" class="completed-file-zone">
                                     <input
-                                            type="file"
-                                            @change="handleFileChange($event, order.id)"
-                                            accept="video/*"
-                                            class="file-input"
+                                            type="text"
+                                            v-model="completedUrls[order.id]"
+                                            placeholder="구글드라이브/유튜브 링크 입력"
+                                            class="url-input"
                                     />
-                                    <p v-if="selectedFiles[order.id]" class="file-name-preview">
-                                        선택됨: {{ selectedFiles[order.id].name }}
-                                    </p>
                                 </div>
 
                                 <button @click="submitStatusUpdate(order)" class="btn-submit-status">
@@ -104,7 +100,7 @@
       data() {
         return {
           orders: [],
-          selectedFiles: {}
+          completedUrls: {}
         }
       },
       mounted() {
@@ -126,46 +122,37 @@
           }
         },
 
-        // 💡 관리자가 선택한 비디오 결과물 파일을 임시 기록하는 핸들러
-        handleFileChange(event, orderId) {
-          const file = event.target.files[0];
-          if (file) {
-            // 🎯 [수정] Vue 3 환경에 맞게 복잡한 $set 대신 직관적인 대입 연산자로 변경합니다.
-            this.selectedFiles[orderId] = file;
-          }
-        },
-
         async submitStatusUpdate(order) {
           try {
             const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
-            const formData = new FormData();
-            formData.append('id', order.id);
-            formData.append('orderStatus', order.orderStatus);
-
-            // 🎯 [수정] 제작 완료 시 파일 필수 체크 및 예외 처리 로직 강화
-            if (this.selectedFiles[order.id]) {
-              // 1. 선택된 파일이 있다면 FormData에 정상 탑재
-              formData.append('file', this.selectedFiles[order.id]);
-            } else if (order.orderStatus === 'COMPLETED') {
-              // 2. 상태는 '제작 완료'인데 선택된 파일이 없다면 절대 통과 못하게 리턴 차단!
-              alert('⚠️ [오류] 상태를 "제작 완료"로 변경하려면 유저에게 전달할 영상 완료 파일을 반드시 첨부해야 합니다.');
-              return; // 🛑 여기서 함수를 강제 종료하여 서버 전송을 막습니다.
+            // 제작 완료 시 URL 필수 체크
+            if (order.orderStatus === 'COMPLETED') {
+              const url = this.completedUrls[order.id];
+              if (!url || url.trim() === '') {
+                alert('⚠️ 상태를 "제작 완료"로 변경하려면 영상 다운로드 링크를 입력해야 합니다.');
+                return;
+              }
             } else {
-              // 3. 완료 상태가 아닌 다른 상태(제작중 등)이면서 파일이 없는 경우는 부드럽게 경고 후 진행
               const goAhead = confirm(`주문 No.${order.id}의 상태를 변경하시겠습니까?`);
               if (!goAhead) return;
             }
 
-            // 아래 백엔드 통신(fetch) 코드는 기존과 동일하게 유지됩니다.
+            const body = {
+              id: order.id,
+              orderStatus: order.orderStatus,
+              completedFileUrl: this.completedUrls[order.id] || ''
+            };
+
             const response = await fetch(`${baseUrl}/api/orders/admin/status-update`, {
               method: 'POST',
-              body: formData
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(body)
             });
 
             if (response.ok) {
               alert(`주문 No.${order.id}의 변경 정보가 성공적으로 반영되었습니다! 🎉`);
-              delete this.selectedFiles[order.id];
+              delete this.completedUrls[order.id];
               try {
                 this.fetchOrders();
               } catch (fetchError) {
@@ -190,26 +177,6 @@
           const link = document.createElement('a');
           link.href = downloadUrl;
           link.setAttribute('download', file.originalFileName);
-          document.body.appendChild(link);
-
-          link.click();
-          document.body.removeChild(link);
-        },
-
-        // 🎯 [추가] 관리자가 업로드한 완료 비디오 파일을 다운로드하는 함수
-        downloadCompletedFile(fileName) {
-          if (!fileName) return;
-
-          // 백엔드 API 규격에 맞춰 인코딩 처리
-          const sName = encodeURIComponent(fileName);
-          const oName = encodeURIComponent(fileName);
-
-          // 기존 백엔드 다운로드 주소 그대로 활용
-          const downloadUrl = `${import.meta.env.VITE_API_BASE_URL}/api/orders/admin/download?storedName=${sName}&originName=${oName}`;
-
-          const link = document.createElement('a');
-          link.href = downloadUrl;
-          link.setAttribute('download', fileName);
           document.body.appendChild(link);
 
           link.click();
@@ -286,19 +253,16 @@
     .admin-status-select option { background-color: #0b0f19; color: #fff; }
 
     .completed-file-zone { background: rgba(255, 255, 255, 0.03); padding: 6px; border-radius: 8px; border: 1px dashed rgba(255, 255, 255, 0.1); width: 100%; box-sizing: border-box; }
-    .file-input { font-size: 11px; color: #9aa4b7; max-width: 140px; cursor: pointer; }
-    .file-name-preview { margin: 4px 0 0 0; font-size: 11px; color: #22c55e; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 140px; }
 
     .btn-submit-status { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border: none; padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; transition: opacity 0.2s; width: 100%; }
     .btn-submit-status:hover { opacity: 0.9; }
 
     .text-muted { color: #475569; }
 
-    /* 🎯 완료본 영역 정렬 및 말줄임표용 CSS */
     .completed-file-link {
         display: flex;
         align-items: center;
-        max-width: 220px; /* 👈 첨부파일 칸 너비에 맞게 적절히 제한 (조절 가능) */
+        max-width: 220px;
     }
     .completed-file-text {
         color: #00c6ff;
@@ -306,12 +270,24 @@
         font-weight: 500;
         margin-left: 4px;
         overflow: hidden;
-        text-overflow: ellipsis; /* 👈 넘치면 ... 처리 */
-        white-space: nowrap;     /* 👈 한 줄로 강제 고정 */
+        text-overflow: ellipsis;
+        white-space: nowrap;
         display: inline-block;
         width: 100%;
     }
     .completed-file-text:hover {
         text-decoration: underline;
     }
+    .url-input {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 8px;
+        background: #1e293b;
+        color: #fff;
+        font-size: 13px;
+        margin-top: 8px;
+    }
+    .url-input::placeholder { color: #64748b; }
+    .url-input:focus { outline: none; border-color: #00c6ff; }
 </style>
